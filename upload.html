@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="rating" content="adult" />
+  <title>Upload | Jynvelo</title>
+  <link rel="icon" href="logo.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="index.html"><img src="logo.jpg" alt="" /> Jyn<b>velo</b></a>
+      <a class="btn btn-ghost" href="index.html">Library</a>
+    </div>
+  </header>
+  <div class="auth">
+    <h1 style="margin-top:0">Publish</h1>
+    <p id="who" style="color:#9a9184;font-size:13px"></p>
+    <form id="f">
+      <label>Video title</label>
+      <input name="title" required maxlength="120" placeholder="Write the video title" />
+      <label>Hashtags</label>
+      <input name="tags" placeholder="#hindi #hd #new" />
+      <p style="color:#9a9184;font-size:12px;margin:6px 0 0">Use #hashtags. Space or comma is fine.</p>
+      <label>MP4 file (Firebase Storage — needs keys)</label>
+      <input name="file" type="file" accept="video/*" />
+      <label>or public MP4 URL</label>
+      <input name="url" type="text" placeholder="https://…/file.mp4" />
+      <label style="display:flex;gap:8px;align-items:center;margin:14px 0">
+        <input type="checkbox" required /> I own this video / have rights. 18+ only.
+      </label>
+      <button class="btn btn-gold" style="width:100%">Publish</button>
+    </form>
+    <p class="msg" id="msg"></p>
+  </div>
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import "./app.js";
+    const who = document.getElementById("who");
+    const msg = document.getElementById("msg");
+    JV.onUser((u) => {
+      if (!JV.ready) { who.textContent = "Add Firebase keys first."; return; }
+      if (!u) { who.textContent = "Not logged in."; location.href = "login.html"; return; }
+      who.textContent = "Publishing as " + (u.displayName || u.email);
+    });
+    document.getElementById("f").onsubmit = async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      msg.className = "msg";
+      msg.textContent = "Uploading…";
+      try {
+        await JV.publish({
+          title: fd.get("title"),
+          tags: fd.get("tags"),
+          file: document.querySelector("[name=file]").files[0],
+          url: fd.get("url")
+        });
+        msg.className = "msg ok";
+        msg.textContent = "Live. Opening library…";
+        setTimeout(() => location.href = "index.html", 800);
+      } catch (err) {
+        msg.className = "msg err";
+        msg.textContent = err.message || String(err);
+      }
+    };
+  </script>
+</body>
+</html>

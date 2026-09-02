@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="rating" content="adult" />
+  <title>Account | Jynvelo</title>
+  <link rel="icon" href="logo.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="index.html"><img src="logo.jpg" alt="" /> Jyn<b>velo</b></a>
+    </div>
+  </header>
+  <div class="auth">
+    <img src="logo.jpg" alt="Jynvelo" style="width:48px;height:48px;border-radius:12px;object-fit:cover" />
+    <h1 style="margin:12px 0 4px;font-size:24px">Account</h1>
+    <p id="status" class="s" style="color:#9a9184;font-size:13px">Real accounts via Firebase. You get a verification email from Google.</p>
+    <div id="tabs" style="display:flex;gap:8px;margin:16px 0">
+      <button class="btn btn-gold" id="tIn">Log in</button>
+      <button class="btn btn-ghost" id="tUp">Create account</button>
+    </div>
+    <form id="f">
+      <div id="nameRow" style="display:none">
+        <label>Display name</label>
+        <input name="name" type="text" placeholder="Your name" />
+      </div>
+      <label>Email</label>
+      <input name="email" type="email" required placeholder="you@email.com" />
+      <label>Password</label>
+      <input name="pass" type="password" required minlength="6" placeholder="min 6 characters" />
+      <label style="display:flex;gap:8px;align-items:center;margin:14px 0">
+        <input type="checkbox" id="age" required /> I am 18+
+      </label>
+      <button class="btn btn-gold" style="width:100%" id="go">Continue</button>
+    </form>
+    <p><button class="btn btn-ghost" id="reset" type="button" style="margin-top:10px">Forgot password — email reset</button></p>
+    <p class="msg" id="msg"></p>
+  </div>
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import "./app.js";
+    const msg = document.getElementById("msg");
+    const status = document.getElementById("status");
+    let mode = "in";
+    if (!JV.ready) {
+      status.innerHTML = "Firebase not connected. Open <code>firebase-config.js</code>, paste keys from Firebase Console, upload again. Until then nobody can register.";
+    }
+    document.getElementById("tIn").onclick = () => {
+      mode = "in";
+      document.getElementById("nameRow").style.display = "none";
+      document.getElementById("go").textContent = "Log in";
+    };
+    document.getElementById("tUp").onclick = () => {
+      mode = "up";
+      document.getElementById("nameRow").style.display = "block";
+      document.getElementById("go").textContent = "Create account";
+    };
+    document.getElementById("f").onsubmit = async (e) => {
+      e.preventDefault();
+      msg.textContent = "";
+      const fd = new FormData(e.target);
+      try {
+        if (mode === "up") {
+          await JV.signup(fd.get("email"), fd.get("pass"), fd.get("name"));
+          msg.className = "msg ok";
+          msg.textContent = "Account created. Check email (and spam) for the Firebase verification link. Then log in.";
+        } else {
+          await JV.login(fd.get("email"), fd.get("pass"));
+          location.href = "index.html";
+        }
+      } catch (err) {
+        msg.className = "msg err";
+        msg.textContent = err.message || String(err);
+      }
+    };
+    document.getElementById("reset").onclick = async () => {
+      const email = document.querySelector("[name=email]").value;
+      try {
+        await JV.reset(email);
+        msg.className = "msg ok";
+        msg.textContent = "Reset email sent.";
+      } catch (err) {
+        msg.className = "msg err";
+        msg.textContent = err.message || String(err);
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="rating" content="adult" />
+  <title>Jynvelo</title>
+  <link rel="icon" href="logo.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="gate" id="gate">
+    <div class="gate-box">
+      <img src="logo.jpg" alt="Jynvelo" width="72" height="72" style="width:72px;height:72px;border-radius:16px;object-fit:cover" />
+      <h1 style="margin:14px 0 6px">Jynvelo</h1>
+      <p style="color:#9a9184;margin:0 0 18px">Adults only. You must be 18 or older.</p>
+      <button class="btn btn-gold" onclick="enter()">I am 18+</button>
+      <button class="btn btn-ghost" onclick="location.href='https://www.google.com'">Exit</button>
+    </div>
+  </div>
+
+  <div id="site" style="display:none">
+    <header class="top">
+      <div class="wrap top-in">
+        <a class="brand" href="index.html">
+          <img src="logo.jpg" alt="Jynvelo logo" />
+          Jyn<b>velo</b>
+        </a>
+        <input class="search" id="q" placeholder="Search title or #hashtag" />
+        <a class="btn btn-ghost" href="upload.html">Upload</a>
+        <span id="authBox"></span>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <p class="k">Independent 18+ studio</p>
+        <h1>Your films. Your brand.</h1>
+        <p class="s">Not a clone. Empty library until you publish. Accounts live on Firebase — not this browser.</p>
+      </section>
+      <div class="ad">AD · TOP 728×90 — paste ExoClick here later</div>
+      <h2 style="font-size:16px;margin:8px 0 14px">Library</h2>
+      <div id="grid" class="grid"></div>
+      <div class="ad">AD · BOTTOM</div>
+    </main>
+    <footer class="foot wrap">
+      Jynvelo · 18+ · 2257 / DMCA placeholders · Do not upload content you do not own.
+    </footer>
+  </div>
+
+  <div class="player" id="player">
+    <div class="player-in">
+      <div class="preroll" id="preroll">
+        <div>AD · 10s pre-roll</div>
+        <div id="skip">Skip in 10</div>
+      </div>
+      <video id="vid" controls playsinline></video>
+      <div style="padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;gap:12px">
+          <strong id="ptitle"></strong>
+          <button class="btn btn-ghost" onclick="closeP()">Close</button>
+        </div>
+        <p id="ptags" style="color:#c4a35a;font-size:13px;margin:8px 0 0"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import "./app.js";
+    const gate = document.getElementById("gate");
+    const site = document.getElementById("site");
+    window.enter = () => { sessionStorage.setItem("jv18", "1"); gate.style.display = "none"; site.style.display = "block"; };
+    if (sessionStorage.getItem("jv18") === "1") enter();
+
+    const box = document.getElementById("authBox");
+    function paintAuth(u) {
+      if (!window.JV.ready) {
+        box.innerHTML = '<a class="btn btn-wine" href="login.html">Setup login</a>';
+        return;
+      }
+      if (!u) {
+        box.innerHTML = '<a class="btn btn-gold" href="login.html">Log in</a>';
+        return;
+      }
+      box.innerHTML = '<span style="font-size:13px;margin-right:8px">' + (u.displayName || u.email) + '</span><button class="btn btn-ghost" id="lo">Out</button>';
+      document.getElementById("lo").onclick = () => JV.logout();
+    }
+    JV.onUser(paintAuth);
+
+    const grid = document.getElementById("grid");
+    let all = [];
+    async function load() {
+      try { all = await JV.listVideos(); } catch (e) { all = []; }
+      draw(all);
+    }
+    function draw(list) {
+      const q = (document.getElementById("q").value || "").toLowerCase();
+      const rows = list.filter((v) => {
+        if (!q) return true;
+        const hay = ((v.title || "") + " " + (v.tags || []).join(" ") + " " + JV.formatTags(v.tags || [])).toLowerCase();
+        return hay.includes(q.replace(/^#/, ""));
+      });
+      if (!JV.ready) {
+        grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Firebase keys missing. Open firebase-config.js and add your project. Then login becomes real for every visitor.</div>';
+        return;
+      }
+      if (!rows.length) {
+        grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No videos yet. Log in → Upload your own file or MP4 URL.</div>';
+        return;
+      }
+      grid.innerHTML = rows.map((v, i) =>
+        '<article class="card" data-i="'+i+'"><div class="thumb">▶</div><div class="meta"><h3>'+
+        (v.title||"Video")+'</h3><small>'+(v.user||"")+'</small><div style="color:#c4a35a;font-size:12px;margin-top:4px">'+
+        JV.formatTags(v.tags||[])+'</div></div></article>'
+      ).join("");
+      grid.querySelectorAll(".card").forEach((el) => {
+        el.onclick = () => openP(rows[+el.dataset.i]);
+      });
+    }
+    document.getElementById("q").oninput = () => draw(all);
+    load();
+
+    let t;
+    window.openP = (v) => {
+      document.getElementById("player").classList.add("show");
+      document.getElementById("ptitle").textContent = v.title || "";
+      document.getElementById("ptags").textContent = JV.formatTags(v.tags || []);
+      const preroll = document.getElementById("preroll");
+      const vid = document.getElementById("vid");
+      preroll.style.display = "flex";
+      vid.style.display = "none";
+      vid.src = v.src || "";
+      let n = 10;
+      document.getElementById("skip").textContent = "Skip in " + n;
+      clearInterval(t);
+      t = setInterval(() => {
+        n -= 1;
+        document.getElementById("skip").textContent = n > 0 ? "Skip in " + n : "Skip";
+        if (n <= 0) {
+          clearInterval(t);
+          preroll.style.display = "none";
+          vid.style.display = "block";
+          vid.play().catch(() => {});
+        }
+      }, 1000);
+    };
+    window.closeP = () => {
+      clearInterval(t);
+      const vid = document.getElementById("vid");
+      vid.pause();
+      document.getElementById("player").classList.remove("show");
+    };
+  </script>
+</body>
+</html>
