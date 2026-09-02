@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="rating" content="adult" />
+  <title>Login | Jynvelo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="vh-store.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; background: #0d0d0d; color: #eee; }
+    .bg-xh { background: #e34449; }
+    .xh-red { color: #e34449; }
+    input::placeholder { color: #777; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="bg-[#0d0d0d] border-b border-[#222]">
+    <div class="max-w-[1280px] mx-auto px-3 h-14 flex items-center justify-between">
+      <a href="index-18plus.html" class="flex items-center gap-2">
+        <span class="w-8 h-8 bg-xh rounded flex items-center justify-center font-black text-sm">JV</span>
+        <span class="font-bold text-lg">Jyn<span class="xh-red">velo</span> <span class="text-[10px] align-middle bg-xh px-1 rounded">18+</span></span>
+      </a>
+      <a href="index-18plus.html" class="text-sm text-zinc-400 hover:text-white">Back to videos</a>
+    </div>
+  </header>
+
+  <main class="max-w-md mx-auto px-4 py-12">
+    <div class="border border-[#2a2a2a] bg-[#161616] rounded-lg p-6">
+      <div class="flex mb-6 border-b border-[#2a2a2a]">
+        <button id="tabLogin" class="flex-1 pb-3 text-sm font-semibold border-b-2 border-[#e34449]">Log in</button>
+        <button id="tabSignup" class="flex-1 pb-3 text-sm font-semibold text-zinc-500 border-b-2 border-transparent">Sign up</button>
+      </div>
+
+      <form id="loginForm" class="space-y-4">
+        <h1 class="text-xl font-bold">Welcome back</h1>
+        <p class="text-xs text-zinc-500">Log in to sync favorites. Pre-roll ads still play before videos.</p>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Email or username</label>
+          <input name="user" required class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="you@email.com" />
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Password</label>
+          <input name="pass" type="password" required minlength="4" class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="••••••••" />
+        </div>
+        <label class="flex items-center gap-2 text-xs text-zinc-400">
+          <input type="checkbox" class="accent-[#e34449]" /> Remember me
+        </label>
+        <button class="w-full h-10 bg-xh hover:bg-red-500 rounded font-semibold text-sm">Log in</button>
+        <p id="loginErr" class="hidden text-xs text-red-400"></p>
+        <p class="text-center text-xs text-zinc-500">Accounts are stored in this browser only. After login you can upload videos.</p>
+      </form>
+
+      <div id="signupForm" class="space-y-4 hidden">
+        <h1 class="text-xl font-bold">Create account</h1>
+        <p class="text-xs text-zinc-500">Enter email → get 6-digit OTP → set username & password.</p>
+
+        <div id="otpStep1" class="space-y-3">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1">Email</label>
+            <input id="otpEmail" type="email" class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="you@email.com" />
+          </div>
+          <button type="button" id="btnSendOtp" class="w-full h-10 bg-xh hover:bg-red-500 rounded font-semibold text-sm">Send OTP</button>
+        </div>
+
+        <div id="otpStep2" class="space-y-3 hidden">
+          <p class="text-xs text-zinc-400">OTP sent to <span id="otpEmailLabel" class="text-white"></span></p>
+          <input id="otpCode" inputmode="numeric" maxlength="6" class="w-full h-12 bg-[#1a1a1a] border border-[#333] rounded px-3 text-center text-2xl tracking-[0.4em] outline-none focus:border-[#e34449]" placeholder="000000" />
+          <button type="button" id="btnCheckOtp" class="w-full h-10 bg-xh hover:bg-red-500 rounded font-semibold text-sm">Verify OTP</button>
+          <button type="button" id="btnResend" class="w-full text-xs text-zinc-500 hover:text-white">Resend OTP</button>
+        </div>
+
+        <form id="otpStep3" class="space-y-3 hidden">
+          <p class="text-xs text-green-400">Email verified.</p>
+          <input name="username" required minlength="3" class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="Username" />
+          <input name="pass" type="password" required minlength="4" class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="Password (min 4)" />
+          <label class="flex items-start gap-2 text-xs text-zinc-400">
+            <input type="checkbox" required class="mt-0.5 accent-[#e34449]" />
+            <span>I am 18+ and agree to the Terms.</span>
+          </label>
+          <button class="w-full h-10 bg-xh hover:bg-red-500 rounded font-semibold text-sm">Create account</button>
+        </form>
+        <p id="signupErr" class="hidden text-xs text-red-400"></p>
+        <p id="signupOk" class="hidden text-xs text-green-400"></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const tabLogin = document.getElementById('tabLogin');
+    const tabSignup = document.getElementById('tabSignup');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+
+    function showLogin() {
+      loginForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
+      tabLogin.classList.add('border-[#e34449]');
+      tabLogin.classList.remove('text-zinc-500', 'border-transparent');
+      tabSignup.classList.add('text-zinc-500', 'border-transparent');
+      tabSignup.classList.remove('border-[#e34449]');
+    }
+    function showSignup() {
+      signupForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+      tabSignup.classList.add('border-[#e34449]');
+      tabSignup.classList.remove('text-zinc-500', 'border-transparent');
+      tabLogin.classList.add('text-zinc-500', 'border-transparent');
+      tabLogin.classList.remove('border-[#e34449]');
+    }
+    tabLogin.onclick = showLogin;
+    tabSignup.onclick = showSignup;
+    if (new URLSearchParams(location.search).get('tab') === 'signup') showSignup();
+
+    const next = new URLSearchParams(location.search).get('next') || 'index-18plus.html';
+
+    function goNext() {
+      location.href = next;
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(loginForm);
+      const res = VH.login({ user: fd.get('user'), pass: fd.get('pass') });
+      const el = document.getElementById('loginErr');
+      if (!res.ok) {
+        el.textContent = res.error;
+        el.classList.remove('hidden');
+        return;
+      }
+      goNext();
+    });
+
+    const EMAILJS = {
+      publicKey: "",
+      serviceId: "",
+      templateId: ""
+    };
+
+    function showErr(t) {
+      const el = document.getElementById('signupErr');
+      const ok = document.getElementById('signupOk');
+      ok.classList.add('hidden');
+      if (!t) { el.classList.add('hidden'); return; }
+      el.textContent = t;
+      el.classList.remove('hidden');
+    }
+    function showOk(t) {
+      const el = document.getElementById('signupOk');
+      document.getElementById('signupErr').classList.add('hidden');
+      el.textContent = t;
+      el.classList.remove('hidden');
+    }
+
+    async function sendOtpMail(email, code) {
+      if (EMAILJS.publicKey && EMAILJS.serviceId && EMAILJS.templateId && window.emailjs) {
+        emailjs.init(EMAILJS.publicKey);
+        await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, {
+          to_email: email,
+          otp: code,
+          passcode: code
+        });
+        return { mailed: true };
+      }
+      return { mailed: false };
+    }
+
+    async function doSendOtp() {
+      const email = document.getElementById('otpEmail').value;
+      showErr("");
+      const res = VH.requestOtp(email);
+      if (!res.ok) { showErr(res.error); return; }
+      try {
+        const sent = await sendOtpMail(res.email, res.code);
+        document.getElementById('otpStep1').classList.add('hidden');
+        document.getElementById('otpStep2').classList.remove('hidden');
+        document.getElementById('otpEmailLabel').textContent = res.email;
+        if (sent.mailed) {
+          showOk("OTP sent to your email. Valid 10 minutes.");
+        } else {
+          showOk("EmailJS not connected yet. Demo OTP: " + res.code + " (valid 10 min). Add keys in login.html to send real email.");
+        }
+      } catch (e) {
+        showErr("Could not send email. Demo OTP: " + res.code);
+        document.getElementById('otpStep1').classList.add('hidden');
+        document.getElementById('otpStep2').classList.remove('hidden');
+        document.getElementById('otpEmailLabel').textContent = res.email;
+      }
+    }
+
+    document.getElementById('btnSendOtp').onclick = doSendOtp;
+    document.getElementById('btnResend').onclick = doSendOtp;
+    document.getElementById('btnCheckOtp').onclick = () => {
+      const email = document.getElementById('otpEmail').value;
+      const code = document.getElementById('otpCode').value;
+      const res = VH.verifyOtp(email, code);
+      if (!res.ok) { showErr(res.error); return; }
+      document.getElementById('otpStep2').classList.add('hidden');
+      document.getElementById('otpStep3').classList.remove('hidden');
+      showOk("OTP verified. Create your account.");
+    };
+
+    document.getElementById('otpStep3').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const res = VH.signupVerified({
+        username: fd.get('username'),
+        email: document.getElementById('otpEmail').value,
+        pass: fd.get('pass')
+      });
+      if (!res.ok) { showErr(res.error); return; }
+      goNext();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="rating" content="adult" />
+  <title>Upload video | Jynvelo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="vh-store.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; background: #111; color: #eee; }
+    .bg-xh { background: #e34449; }
+    .xh-red { color: #e34449; }
+    input::placeholder, textarea::placeholder { color: #777; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="bg-[#0d0d0d] border-b border-[#222]">
+    <div class="max-w-[1280px] mx-auto px-3 h-14 flex items-center justify-between">
+      <a href="index-18plus.html" class="flex items-center gap-2">
+        <span class="w-8 h-8 bg-xh rounded flex items-center justify-center font-black text-sm">JV</span>
+        <span class="font-bold text-lg">Jyn<span class="xh-red">velo</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <span id="who" class="text-zinc-400"></span>
+        <a href="index-18plus.html" class="text-zinc-400 hover:text-white">Library</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-1">Upload video</h1>
+    <p class="text-sm text-zinc-500 mb-6">Logged-in users can publish to the public grid. Files stay in this browser (IndexedDB demo — not a cloud host).</p>
+
+    <form id="form" class="space-y-4 border border-[#2a2a2a] bg-[#161616] rounded-lg p-5">
+      <div>
+        <label class="block text-xs text-zinc-400 mb-1">Title</label>
+        <input name="title" required maxlength="120" class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="Video title" />
+      </div>
+      <div>
+        <label class="block text-xs text-zinc-400 mb-1">Tags (comma separated)</label>
+        <input name="tags" class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="hindi, indian, hd, couple" />
+      </div>
+      <div>
+        <label class="block text-xs text-zinc-400 mb-1">Video file (MP4 / WebM) — max ~80MB recommended</label>
+        <input id="file" name="file" type="file" accept="video/mp4,video/webm,video/*" class="w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded file:border-0 file:bg-xh file:text-white file:text-sm" />
+        <p id="fileInfo" class="text-xs text-zinc-500 mt-1"></p>
+      </div>
+      <div>
+        <label class="block text-xs text-zinc-400 mb-1">Or paste a direct video URL (optional if you chose a file)</label>
+        <input name="src" type="url" class="w-full h-10 bg-[#1a1a1a] border border-[#333] rounded px-3 text-sm outline-none focus:border-[#e34449]" placeholder="https://example.com/video.mp4" />
+      </div>
+      <label class="flex items-start gap-2 text-xs text-zinc-400">
+        <input type="checkbox" required class="mt-0.5 accent-[#e34449]" />
+        <span>I confirm I am 18+, I own this video or have rights to publish it, and it does not involve anyone under 18.</span>
+      </label>
+      <button id="btn" class="w-full h-11 bg-xh hover:bg-red-500 rounded font-semibold text-sm">Publish</button>
+      <p id="msg" class="text-xs text-zinc-400"></p>
+    </form>
+
+    <section class="mt-10">
+      <h2 class="font-semibold mb-3">My uploads</h2>
+      <div id="mine" class="space-y-2 text-sm"></div>
+    </section>
+  </main>
+
+  <script>
+    const session = VH.getSession();
+    if (!session) {
+      location.href = "login.html?next=upload.html";
+    } else {
+      document.getElementById("who").textContent = session.name;
+    }
+
+    const fileInput = document.getElementById("file");
+    let pickedFile = null;
+    let durationSec = 0;
+
+    fileInput.addEventListener("change", () => {
+      pickedFile = fileInput.files[0] || null;
+      durationSec = 0;
+      if (!pickedFile) {
+        document.getElementById("fileInfo").textContent = "";
+        return;
+      }
+      const mb = (pickedFile.size / 1048576).toFixed(1);
+      document.getElementById("fileInfo").textContent = pickedFile.name + " · " + mb + " MB";
+      const url = URL.createObjectURL(pickedFile);
+      const v = document.createElement("video");
+      v.preload = "metadata";
+      v.src = url;
+      v.onloadedmetadata = () => {
+        durationSec = Math.round(v.duration || 0);
+        document.getElementById("fileInfo").textContent =
+          pickedFile.name + " · " + mb + " MB · " + Math.floor(durationSec / 60) + ":" + String(durationSec % 60).padStart(2, "0");
+        URL.revokeObjectURL(url);
+      };
+    });
+
+    function renderMine() {
+      const list = VH.listUploads().filter((x) => x.user === session.name);
+      const box = document.getElementById("mine");
+      if (!list.length) {
+        box.innerHTML = '<p class="text-zinc-500 text-xs">No uploads yet.</p>';
+        return;
+      }
+      box.innerHTML = list.map((v) =>
+        '<div class="flex items-center justify-between gap-3 bg-[#161616] border border-[#2a2a2a] rounded px-3 py-2">' +
+        '<div><p class="font-medium">' + v.title + '</p><p class="text-[11px] text-zinc-500">' +
+        (v.tags || []).join(", ") + (v.hasFile ? " · saved in browser" : " · URL") +
+        '</p></div>' +
+        '<button data-id="' + v.id + '" class="del text-xs text-red-400 hover:text-red-300">Delete</button></div>'
+      ).join("");
+      box.querySelectorAll(".del").forEach((b) => {
+        b.onclick = async () => {
+          await VH.removeUpload(b.dataset.id, session.name);
+          renderMine();
+        };
+      });
+    }
+    renderMine();
+
+    document.getElementById("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const title = String(fd.get("title") || "").trim();
+      const src = String(fd.get("src") || "").trim();
+      const tags = String(fd.get("tags") || "indian")
+        .split(",")
+        .map((t) => t.trim().toLowerCase())
+        .filter(Boolean);
+      const msg = document.getElementById("msg");
+      const btn = document.getElementById("btn");
+      if (!pickedFile && !src) {
+        msg.textContent = "Choose a file or paste a video URL.";
+        msg.className = "text-xs text-red-400";
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "Publishing…";
+      try {
+        await VH.addUpload(
+          { title, user: session.name, tags, src, dur: durationSec, hd: true, thumb: "" },
+          pickedFile
+        );
+        msg.textContent = "Published. Opening library…";
+        msg.className = "text-xs text-green-400";
+        setTimeout(() => { location.href = "index-18plus.html?mine=1"; }, 600);
+      } catch (err) {
+        msg.textContent = "Upload failed: " + (err.message || err);
+        msg.className = "text-xs text-red-400";
+        btn.disabled = false;
+        btn.textContent = "Publish";
+      }
+    });
+  </script>
+</body>
+</html>

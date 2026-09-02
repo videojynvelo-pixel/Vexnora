@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="rating" content="adult" />
+  <title>Jynvelo | 18+</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="vh-store.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Noto Sans Gujarati', Inter, sans-serif; background: #111; color: #eee; }
+    .xh-red { color: #e34449; }
+    .bg-xh { background: #e34449; }
+    .thumb:hover .overlay { opacity: 1; }
+    .thumb:hover img { transform: scale(1.06); }
+    .line-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .chip { background: #2a2a2a; border: 1px solid #333; }
+    .chip:hover { background: #e34449; border-color: #e34449; color: #fff; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #444; }
+    input::placeholder { color: #777; }
+    .ad-slot { background: linear-gradient(90deg,#1a1a1a,#221616,#1a1a1a); border: 1px dashed #3a3a3a; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <div id="ageGate" class="fixed inset-0 z-[300] bg-black flex items-center justify-center p-4">
+    <div class="w-full max-w-md text-center rounded-lg border border-[#333] bg-[#161616] p-8">
+      <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-xh flex items-center justify-center text-xl font-black">18+</div>
+      <h1 class="text-2xl font-bold mb-2">Adults only</h1>
+      <p class="text-sm text-zinc-400 mb-6 leading-relaxed">
+        આ સાઇટ ૧૮ વર્ષથી ઉપરના માટે છે. xHamster / XNXX જેવી ટ્યુબ ડિઝાઇનનો ડેમો.
+        અસલ પોર્ન વિડિયો અહીં હોસ્ટ થયેલા નથી.
+      </p>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="enterSite()" class="bg-xh hover:bg-red-500 py-3 rounded font-semibold">I'm 18+</button>
+        <button onclick="location.href='https://www.google.com'" class="bg-[#2a2a2a] hover:bg-[#333] py-3 rounded font-semibold">Exit</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mainSite" class="hidden">
+    <header class="sticky top-0 z-50 bg-[#0d0d0d] border-b border-[#222]">
+      <div class="max-w-[1280px] mx-auto px-3 h-14 flex items-center gap-3">
+        <a href="#" class="flex items-center gap-2 shrink-0" onclick="showHome();return false;">
+          <span class="w-8 h-8 bg-xh rounded flex items-center justify-center font-black text-sm">JV</span>
+          <span class="font-bold text-lg hidden sm:block">Jyn<span class="xh-red">velo</span></span>
+        </a>
+        <form class="flex-1 max-w-xl mx-auto hidden sm:flex" onsubmit="event.preventDefault();">
+          <input type="search" placeholder="Search: hindi, xnxx, ગુજરાતી..."
+            class="w-full h-9 bg-[#1a1a1a] border border-[#333] rounded-l px-3 text-sm outline-none focus:border-[#e34449]" />
+          <button class="h-9 px-4 bg-xh rounded-r text-sm font-semibold">Search</button>
+        </form>
+        <nav class="ml-auto flex items-center gap-2 text-sm">
+          <a href="upload.html" class="hidden md:inline px-2 py-1 text-zinc-400 hover:text-white">Upload</a>
+          <span id="authGuest" class="flex items-center gap-2">
+            <a href="login.html" class="px-3 py-1.5 rounded border border-[#333] hover:border-white text-zinc-300">Login</a>
+            <a href="login.html?tab=signup" class="px-3 py-1.5 rounded bg-xh font-semibold">Sign Up</a>
+          </span>
+          <span id="authUser" class="hidden items-center gap-2">
+            <span id="authName" class="text-zinc-300 text-xs sm:text-sm"></span>
+            <button onclick="logout()" class="px-3 py-1.5 rounded border border-[#333] hover:border-white text-zinc-300">Logout</button>
+          </span>
+        </nav>
+      </div>
+      <div class="bg-[#161616] border-b border-[#222]">
+        <div class="max-w-[1280px] mx-auto px-3 h-10 flex items-center gap-5 text-[13px] overflow-x-auto">
+          <a href="#" class="text-white font-semibold border-b-2 border-[#e34449] h-10 flex items-center" onclick="showHome();return false;">Videos</a>
+          <a href="upload.html" class="text-zinc-400 hover:text-white">Upload</a>
+          <a href="#" class="text-zinc-400 hover:text-white" onclick="filterTag='user'; document.querySelectorAll('.tagChip').forEach(function(b){b.classList.remove('bg-xh','text-white');}); render(); return false;">My videos</a>
+          <a href="#tags" class="text-zinc-400 hover:text-white">Categories</a>
+          <a href="#tags" class="text-zinc-400 hover:text-white">Tags</a>
+          <a href="#" class="text-zinc-400 hover:text-white">Hindi</a>
+          <a href="#" class="text-zinc-400 hover:text-white">ગુજરાતી</a>
+          <a href="#" class="text-zinc-400 hover:text-white">HD</a>
+          <a href="#" class="ml-auto text-zinc-500 hidden sm:block">EN / हिन्दी / ગુજ</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="ad-slot max-w-[1280px] mx-auto mt-3 mx-3 md:mx-auto h-[90px] flex items-center justify-center text-center px-3">
+      <div>
+        <p class="text-[10px] tracking-widest text-zinc-500">AD · TOP BANNER 728×90</p>
+        <p class="text-sm text-zinc-300">Your ad network code here (ExoClick / TrafficStars)</p>
+      </div>
+    </div>
+
+    <div class="max-w-[1280px] mx-auto px-3 py-4">
+      <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
+        <div>
+          <p class="text-xs text-zinc-500 mb-1">Tags / <span class="text-zinc-300">xnxx-hindi</span></p>
+          <h1 class="text-2xl font-bold">XNXX Hindi <span class="text-sm font-normal text-zinc-500">18+</span></h1>
+          <p class="text-xs text-zinc-500 mt-1">ડેમો કેટલોગ • ટ્યુબ લેઆઉટ • પ્લેસહોલ્ડર થંબ</p>
+        </div>
+        <div class="flex items-center gap-1 text-sm bg-[#1a1a1a] rounded p-1 border border-[#2a2a2a]">
+          <button class="sortBtn px-3 py-1 rounded bg-xh text-white" data-s="best">Best</button>
+          <button class="sortBtn px-3 py-1 rounded text-zinc-400 hover:text-white" data-s="new">Newest</button>
+          <button class="sortBtn px-3 py-1 rounded text-zinc-400 hover:text-white" data-s="views">Most viewed</button>
+          <button class="sortBtn px-3 py-1 rounded text-zinc-400 hover:text-white" data-s="dur">Longest</button>
+        </div>
+      </div>
+
+      <div id="tags" class="flex flex-wrap gap-1.5 mb-5">
+        <button class="chip tagChip bg-xh text-white px-2.5 py-1 rounded text-xs" data-tag="all">All</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="hindi">Hindi</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="gujarati">ગુજરાતી</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="xnxx">xnxx</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="hd">HD</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="indian">Indian</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="couple">Couple</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="short">Short</button>
+        <button class="chip tagChip px-2.5 py-1 rounded text-xs" data-tag="premium">Premium</button>
+      </div>
+
+      <p class="text-xs text-zinc-500 mb-3"><span id="countLabel">24</span> videos</p>
+      <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"></div>
+      <div class="ad-slot mt-6 h-[90px] flex items-center justify-center text-center">
+        <div>
+          <p class="text-[10px] tracking-widest text-zinc-500">AD · MID BANNER</p>
+          <p class="text-sm text-zinc-300">Second banner under videos</p>
+        </div>
+      </div>
+
+      <div class="flex justify-center items-center gap-1 mt-8 text-sm">
+        <button class="px-3 py-1.5 bg-[#1a1a1a] border border-[#333] rounded text-zinc-500">Prev</button>
+        <button class="px-3 py-1.5 bg-xh rounded">1</button>
+        <button class="px-3 py-1.5 bg-[#1a1a1a] border border-[#333] rounded hover:border-white">2</button>
+        <button class="px-3 py-1.5 bg-[#1a1a1a] border border-[#333] rounded hover:border-white">3</button>
+        <span class="px-2 text-zinc-600">...</span>
+        <button class="px-3 py-1.5 bg-[#1a1a1a] border border-[#333] rounded hover:border-white">Next</button>
+      </div>
+    </div>
+
+    <footer class="mt-10 mb-20 border-t border-[#222] bg-[#0d0d0d] text-xs text-zinc-500">
+      <div class="max-w-[1280px] mx-auto px-3 py-8 grid sm:grid-cols-3 gap-6">
+        <div>
+          <p class="text-white font-semibold mb-2">Jynvelo 18+</p>
+          <p>xHamster / XNXX ટેગ-પેજ જેવી ડિઝાઇન ડેમો. કોઈ તૃતીય-પક્ષ પોર્ન સાઇટનું કન્ટેન્ટ અહીં એમ્બેડ નથી.</p>
+        </div>
+        <div class="space-y-1">
+          <p class="text-white font-semibold mb-2">Legal</p>
+          <p>18 U.S.C. 2257 statement (placeholder)</p>
+          <p>DMCA / Privacy / Terms</p>
+          <p>RTA — Restricted to Adults</p>
+        </div>
+        <div>
+          <p class="text-white font-semibold mb-2">નોંધ</p>
+          <p>તમારી MP4 લિંક VIDEOS એરેમાં નાખો. મિરર સાઇટ્સથી સીધું સ્ક્રેપ/એમ્બેડ કરવું કોપીરાઈટ વિરુદ્ધ છે.</p>
+        </div>
+      </div>
+    </footer>
+
+    <div id="bottomAd" class="fixed bottom-0 left-0 right-0 z-40 border-t border-[#333] bg-[#0d0d0d]/95 backdrop-blur">
+      <div class="max-w-[1280px] mx-auto px-3 py-2 flex items-center gap-3">
+        <div class="ad-slot flex-1 h-[60px] flex items-center justify-center text-center">
+          <div>
+            <p class="text-[10px] tracking-widest text-zinc-500">AD · BOTTOM 728×60</p>
+            <p class="text-xs text-zinc-300">Sticky footer banner</p>
+          </div>
+        </div>
+        <button onclick="document.getElementById('bottomAd').remove()" class="text-zinc-500 hover:text-white text-lg px-2" title="Close">&times;</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="watch" class="fixed inset-0 z-[200] hidden bg-black/95 overflow-y-auto">
+    <div class="max-w-[1100px] mx-auto px-3 py-4">
+      <button onclick="closeWatch()" class="text-zinc-400 hover:text-white mb-3 text-sm">&larr; Back to xnxx-hindi</button>
+      <h2 id="wTitle" class="text-xl font-bold mb-1"></h2>
+      <p id="wMeta" class="text-xs text-zinc-500 mb-3"></p>
+      <div class="ad-slot h-[70px] flex items-center justify-center mb-3 text-center">
+        <p class="text-xs text-zinc-400">AD · ABOVE PLAYER</p>
+      </div>
+      <div class="relative aspect-video bg-black rounded overflow-hidden border border-[#222] mb-3">
+        <video id="adPlayer" class="w-full h-full hidden" playsinline
+          src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"></video>
+        <video id="wPlayer" class="w-full h-full hidden" controls playsinline></video>
+        <div id="adOverlay" class="hidden absolute inset-0 pointer-events-none">
+          <div class="absolute top-3 left-3 bg-black/70 text-[11px] tracking-wide px-2 py-1 rounded">ADVERTISEMENT</div>
+          <button id="skipAdBtn" class="pointer-events-auto absolute bottom-3 right-3 bg-black/80 border border-white/20 px-3 py-1.5 text-xs rounded hover:bg-[#e34449]" disabled>Skip in 10</button>
+        </div>
+      </div>
+      <div class="ad-slot h-[70px] flex items-center justify-center mb-4 text-center">
+        <p class="text-xs text-zinc-400">AD · BELOW PLAYER</p>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs mb-6">
+        <span class="chip px-2 py-1 rounded">Hindi</span>
+        <span class="chip px-2 py-1 rounded">xnxx-hindi</span>
+        <span class="chip px-2 py-1 rounded">18+</span>
+        <span class="chip px-2 py-1 rounded">HD</span>
+      </div>
+      <h3 class="font-semibold mb-3">Related videos</h3>
+      <div id="related" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+    </div>
+  </div>
+
+<script>
+const THUMBS = [
+  "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=640&q=70",
+  "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=640&q=70",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=640&q=70",
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=640&q=70",
+  "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=640&q=70",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=640&q=70",
+  "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=640&q=70",
+  "https://images.unsplash.com/photo-1524502397800-2ee34a7d66bb?w=640&q=70"
+];
+const TITLES = [
+  "Hindi hot night scene", "xnxx-hindi bedroom cut", "Indian couple hotel",
+  "ગુજરાતી રાત વિડિયો", "HD sensual hindi", "Premium dark room",
+  "Short clip midnight", "Desi romance long", "Hindi audio HD",
+  "Couple after party", "Red light studio", "Slow mood 18+",
+  "xnxx hindi look", "Private room tape", "Night drive after",
+  "Window light scene", "VIP suite 409", "Monsoon night",
+  "Hindi talk over", "Soft lights close", "Club after hours",
+  "Longest cut demo", "New upload today", "Most viewed style"
+];
+const USERS = ["desi_studio","hindi_hd","guj_night","premium_in","xnxx_tag","hot_india"];
+function pad(n){ return String(n).padStart(2,"0"); }
+function dur(s){ return pad(Math.floor(s/60))+":"+pad(s%60); }
+const VIDEOS = Array.from({length:24}, (_,i)=>({
+  id: i+1,
+  title: TITLES[i % TITLES.length] + (i>11 ? " #"+(i+1) : ""),
+  user: USERS[i % USERS.length],
+  views: [120000,89000,450000,21000,980000,67000,154000,320000][i%8] + i*137,
+  dur: [184,512,265,721,143,398,956,231][i%8],
+  hd: i%3!==1,
+  age: (i%7)+1,
+  tags: i%2===0 ? ["hindi","xnxx","hd"] : ["gujarati","couple","indian"],
+  extra: i%4===0 ? ["premium"] : (i%5===0?["short"]:[]),
+  thumb: THUMBS[i % THUMBS.length],
+  src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/" +
+       ["ForBiggerBlazes","ForBiggerFun","ForBiggerJoyrides","ForBiggerEscapes"][i%4] + ".mp4"
+}));
+let filterTag = "all";
+let sortBy = "best";
+function fmtViews(n){
+  if(n>=100000) return (n/100000).toFixed(1)+"L";
+  if(n>=1000) return Math.round(n/1000)+"K";
+  return n;
+}
+function cardHTML(v){
+  return '<article class="group cursor-pointer" onclick="openWatch('+v.id+')">'
+    +'<div class="thumb relative aspect-video rounded overflow-hidden bg-[#1c1c1c]">'
+    +'<img src="'+v.thumb+'" alt="" class="w-full h-full object-cover transition duration-300" />'
+    +'<div class="overlay absolute inset-0 bg-black/35 opacity-0 transition flex items-center justify-center">'
+    +'<span class="w-11 h-11 rounded-full bg-xh/90 flex items-center justify-center text-lg">▶</span></div>'
+    +'<span class="absolute bottom-1.5 right-1.5 bg-black/80 text-[11px] px-1 rounded">'+dur(v.dur)+'</span>'
+    +(v.hd?'<span class="absolute top-1.5 right-1.5 bg-black/80 text-[10px] font-bold px-1 rounded">HD</span>':'')
+    +'<span class="absolute top-1.5 left-1.5 bg-xh text-[10px] font-bold px-1 rounded">18+</span>'
+    +(v.hasFile||v.extra&&v.extra.indexOf('user')>=0?'<span class="absolute bottom-1.5 left-1.5 bg-emerald-700 text-[10px] font-bold px-1 rounded">USER</span>':'')
+    +'</div>'
+    +'<h3 class="mt-1.5 text-[13px] leading-snug line-2 group-hover:text-[#e34449]">'+v.title+'</h3>'
+    +'<p class="text-[11px] text-zinc-500 mt-0.5">'+v.user+' · '+fmtViews(v.views)+' views · '+v.age+'d</p></article>';
+}
+function filtered(){
+  let list = VIDEOS.slice();
+  if(filterTag!=="all"){
+    list = list.filter(v => v.tags.includes(filterTag) || v.extra.includes(filterTag));
+  }
+  if(sortBy==="new") list.sort((a,b)=>a.age-b.age);
+  if(sortBy==="views") list.sort((a,b)=>b.views-a.views);
+  if(sortBy==="dur") list.sort((a,b)=>b.dur-a.dur);
+  if(sortBy==="best") list.sort((a,b)=>b.views/a.age - a.views/b.age);
+  return list;
+}
+function render(){
+  const list = filtered();
+  document.getElementById("grid").innerHTML = list.map(cardHTML).join("");
+  document.getElementById("countLabel").textContent = list.length;
+}
+const AD_SRC = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4";
+const SKIP_AFTER = 10;
+let pendingSrc = "";
+let skipTimer = null;
+let skipLeft = SKIP_AFTER;
+
+function getUser(){
+  return (window.VH && VH.getSession()) || null;
+}
+function refreshAuth(){
+  const u = getUser();
+  const guest = document.getElementById("authGuest");
+  const user = document.getElementById("authUser");
+  if(!guest || !user) return;
+  if(u && u.name){
+    guest.classList.add("hidden");
+    user.classList.remove("hidden");
+    user.classList.add("flex");
+    document.getElementById("authName").textContent = u.name;
+  } else {
+    guest.classList.remove("hidden");
+    user.classList.add("hidden");
+    user.classList.remove("flex");
+  }
+}
+function logout(){
+  if (window.VH) VH.clearSession();
+  refreshAuth();
+}
+
+function mergeUploads(){
+  if (!window.VH) return;
+  const mineFilter = new URLSearchParams(location.search).get("mine") === "1";
+  const ups = VH.listUploads().map(function(u){
+    return {
+      id: u.id,
+      title: u.title,
+      user: u.user,
+      views: u.views || 1,
+      dur: u.dur || 0,
+      hd: u.hd !== false,
+      age: 0,
+      tags: (u.tags || []).concat(["user"]),
+      extra: ["user"],
+      thumb: u.thumb || THUMBS[0],
+      src: u.src || "",
+      hasFile: !!u.hasFile
+    };
+  });
+  if (mineFilter) filterTag = "user";
+  const ids = {};
+  VIDEOS.forEach(function(v){ ids[v.id] = true; });
+  ups.reverse().forEach(function(u){
+    if (!ids[u.id]) VIDEOS.unshift(u);
+  });
+}
+
+function startContent(){
+  const ad = document.getElementById("adPlayer");
+  const p = document.getElementById("wPlayer");
+  const ov = document.getElementById("adOverlay");
+  ad.pause();
+  ad.classList.add("hidden");
+  ov.classList.add("hidden");
+  p.classList.remove("hidden");
+  p.src = pendingSrc;
+  p.play().catch(function(){});
+}
+
+function tickSkip(){
+  const btn = document.getElementById("skipAdBtn");
+  skipLeft -= 1;
+  if(skipLeft <= 0){
+    btn.disabled = false;
+    btn.textContent = "Skip Ad";
+    clearInterval(skipTimer);
+  } else {
+    btn.disabled = true;
+    btn.textContent = "Skip in " + skipLeft;
+  }
+}
+
+function startPreroll(src){
+  pendingSrc = src;
+  const ad = document.getElementById("adPlayer");
+  const p = document.getElementById("wPlayer");
+  const ov = document.getElementById("adOverlay");
+  const btn = document.getElementById("skipAdBtn");
+  p.pause();
+  p.removeAttribute("src");
+  p.classList.add("hidden");
+  ad.classList.remove("hidden");
+  ov.classList.remove("hidden");
+  skipLeft = SKIP_AFTER;
+  btn.disabled = true;
+  btn.textContent = "Skip in " + SKIP_AFTER;
+  clearInterval(skipTimer);
+  skipTimer = setInterval(tickSkip, 1000);
+  ad.currentTime = 0;
+  ad.src = AD_SRC;
+  ad.muted = true;
+  ad.play().catch(function(){});
+}
+
+async function openWatch(id){
+  const v = VIDEOS.find(x=>x.id===id);
+  document.getElementById("wTitle").textContent = v.title;
+  document.getElementById("wMeta").textContent = v.user+" · "+fmtViews(v.views)+" views · "+dur(v.dur)+" · 18+";
+  document.getElementById("related").innerHTML =
+    VIDEOS.filter(x=>x.id!==id).slice(0,8).map(cardHTML).join("");
+  document.getElementById("watch").classList.remove("hidden");
+  document.body.style.overflow="hidden";
+  let src = v.src;
+  if (v.hasFile && window.VH) {
+    const blobUrl = await VH.fileUrl(v.id);
+    if (blobUrl) src = blobUrl;
+  }
+  if (!src) src = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+  startPreroll(src);
+}
+function closeWatch(){
+  clearInterval(skipTimer);
+  const ad = document.getElementById("adPlayer");
+  const p = document.getElementById("wPlayer");
+  if(ad) ad.pause();
+  if(p) p.pause();
+  document.getElementById("watch").classList.add("hidden");
+  document.body.style.overflow="";
+}
+function showHome(){ closeWatch(); window.scrollTo(0,0); }
+function enterSite(){
+  document.getElementById("ageGate").classList.add("hidden");
+  document.getElementById("mainSite").classList.remove("hidden");
+  refreshAuth();
+}
+document.querySelectorAll(".tagChip").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    filterTag = btn.dataset.tag;
+    document.querySelectorAll(".tagChip").forEach(function(b){ b.classList.remove("bg-xh","text-white"); });
+    btn.classList.add("bg-xh","text-white");
+    render();
+  });
+});
+document.querySelectorAll(".sortBtn").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    sortBy = btn.dataset.s;
+    document.querySelectorAll(".sortBtn").forEach(function(b){
+      b.classList.remove("bg-xh","text-white");
+      b.classList.add("text-zinc-400");
+    });
+    btn.classList.add("bg-xh","text-white");
+    btn.classList.remove("text-zinc-400");
+    render();
+  });
+});
+mergeUploads();
+render();
+refreshAuth();
+
+(function bindAd(){
+  const ad = document.getElementById("adPlayer");
+  const btn = document.getElementById("skipAdBtn");
+  if(ad){
+    ad.addEventListener("ended", startContent);
+  }
+  if(btn){
+    btn.addEventListener("click", function(){
+      if(!btn.disabled) startContent();
+    });
+  }
+})();
+</script>
+</body>
+</html>
