@@ -32,8 +32,12 @@
       <label style="display:flex;gap:8px;align-items:center;margin:14px 0">
         <input type="checkbox" required /> I own this video / have rights. 18+ only.
       </label>
-      <button class="btn btn-gold" style="width:100%">Publish</button>
+      <button class="btn btn-gold" style="width:100%" id="pub">Publish</button>
     </form>
+    <div id="barWrap" class="bar-wrap" hidden>
+      <div class="bar-track"><div class="bar-fill" id="bar"></div></div>
+      <p class="bar-txt" id="barTxt">0%</p>
+    </div>
     <p class="msg" id="msg"></p>
   </div>
   <script src="firebase-config.js"></script>
@@ -48,19 +52,32 @@
     document.getElementById("f").onsubmit = async (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const wrap = document.getElementById("barWrap");
+      const bar = document.getElementById("bar");
+      const barTxt = document.getElementById("barTxt");
+      const btn = document.getElementById("pub");
+      wrap.hidden = false;
+      btn.disabled = true;
       msg.className = "msg";
       msg.textContent = "Uploading…";
+      const mb = (n) => (n / 1048576).toFixed(1);
       try {
         await JV.publish({
           title: fd.get("title"),
           tags: fd.get("tags"),
           file: document.querySelector("[name=file]").files[0],
-          url: fd.get("url")
+          url: fd.get("url"),
+          onProgress(done, total) {
+            const pct = total ? Math.min(100, Math.round((done / total) * 100)) : 0;
+            bar.style.width = pct + "%";
+            barTxt.textContent = pct + "% posted · " + mb(done) + " MB done · " + mb(Math.max(0, total - done)) + " MB left";
+          }
         });
         msg.className = "msg ok";
-        msg.textContent = "Live. Opening library…";
+        msg.textContent = "100% posted. Opening library…";
         setTimeout(() => location.href = "index.html", 800);
       } catch (err) {
+        btn.disabled = false;
         msg.className = "msg err";
         msg.textContent = err.message || String(err);
       }

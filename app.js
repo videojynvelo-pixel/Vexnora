@@ -7,7 +7,7 @@ import {
 import {
   getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
 const cfg = window.JYNVElo_FIREBASE || {};
 const ready = !!(cfg.apiKey && cfg.projectId && cfg.appId);
@@ -127,22 +127,40 @@ window.JV = {
     }
     return list;
   },
-  async publish({ title, tags, file, url }) {
+  async publish({ title, tags, file, url, onProgress }) {
     const u = ready ? auth && auth.currentUser : localUser();
     if (!u) throw new Error("Login required");
+    const report = (done, total) => {
+      if (typeof onProgress === "function") onProgress(done, total);
+    };
     let src = String(url || "").trim();
     let fileId = "";
     if (file) {
+      const total = file.size || 1;
       if (ready) {
         const path = "videos/" + u.uid + "/" + Date.now() + "-" + file.name.replace(/[^\w.\-]+/g, "_");
         const r = ref(storage, path);
-        await uploadBytes(r, file);
-        src = await getDownloadURL(r);
+        src = await new Promise((resolve, reject) => {
+          const task = uploadBytesResumable(r, file);
+          task.on("state_changed",
+            (s) => report(s.bytesTransferred, s.totalBytes || total),
+            reject,
+            async () => {
+              try { resolve(await getDownloadURL(task.snapshot.ref)); }
+              catch (e) { reject(e); }
+            }
+          );
+        });
+        report(total, total);
       } else {
+        report(0, total);
         fileId = "f" + Date.now();
         await putBlob(fileId, file);
         src = URL.createObjectURL(file);
+        report(total, total);
       }
+    } else if (src) {
+      report(1, 1);
     }
     if (!src && !fileId) throw new Error("Choose a file or paste an MP4 URL");
     const item = {

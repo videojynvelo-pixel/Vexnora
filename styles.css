@@ -61,6 +61,15 @@ button, input { font-size: 16px; } /* stops iOS zoom */
 .cat.on { background: var(--gold); color: #1a1208; border-color: var(--gold); }
 .hero-btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
 .sec { font-size: 17px; margin: 4px 0 12px; }
+.welcome {
+  margin: 12px 0 0; padding: 12px 14px; border-radius: 12px;
+  background: #1e3a24; border: 1px solid #3d7a4e; color: #d4f5dc;
+  font-size: 14px; font-weight: 600;
+}
+.bar-wrap { margin-top: 14px; }
+.bar-track { height: 10px; background: #2a2430; border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, #c4a35a, #f0d48a); transition: width .2s; }
+.bar-txt { font-size: 13px; color: #e8c97a; margin: 8px 0 0; }
 .btn {
   border: 0; cursor: pointer; border-radius: 12px;
   min-height: 44px; padding: 0 16px;

@@ -68,9 +68,19 @@
       try {
         if (mode === "up") {
           await JV.signup(fd.get("email"), fd.get("pass"), fd.get("name"));
+          const name = fd.get("name") || fd.get("email");
+          sessionStorage.setItem("jv_welcome", "Account created for " + name);
           msg.className = "msg ok";
-          msg.textContent = JV.ready ? "Account created. Check email, then log in." : "Account created on this phone. Opening home…";
-          if (!JV.ready) location.href = "index.html";
+          msg.textContent = "Account created. You can log in now.";
+          try {
+            if (Notification && Notification.permission === "granted") {
+              new Notification("Jynvelo", { body: "Account created for " + name });
+            } else if (Notification && Notification.permission !== "denied") {
+              const p = await Notification.requestPermission();
+              if (p === "granted") new Notification("Jynvelo", { body: "Account created for " + name });
+            }
+          } catch (_) {}
+          setTimeout(() => { location.href = "index.html"; }, 800);
         } else {
           await JV.login(fd.get("email"), fd.get("pass"));
           location.href = "index.html";

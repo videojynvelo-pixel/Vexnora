@@ -36,6 +36,7 @@
     </header>
 
     <main class="wrap">
+      <div id="welcome" class="welcome" style="display:none"></div>
       <section class="hero">
         <p class="k">Jynvelo · 18+</p>
         <h1>Trending on Jynvelo</h1>
@@ -94,6 +95,13 @@
       hb.innerHTML = '<a class="btn btn-gold" href="upload.html">Upload video</a>';
     }
     JV.onUser(paintAuth);
+    const w = document.getElementById("welcome");
+    const note = sessionStorage.getItem("jv_welcome");
+    if (note) {
+      w.style.display = "block";
+      w.textContent = note;
+      sessionStorage.removeItem("jv_welcome");
+    }
 
     const grid = document.getElementById("grid");
     let all = [];
