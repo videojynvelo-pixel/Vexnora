@@ -14,7 +14,7 @@
     <div class="gate-box">
       <img src="logo.jpg" alt="Jynvelo" width="72" height="72" style="width:72px;height:72px;border-radius:16px;object-fit:cover" />
       <h1 style="margin:14px 0 6px">Jynvelo</h1>
-      <p style="color:#9a9184;margin:0 0 18px">Adults only. You must be 18 or older.</p>
+      <p style="color:#c4b8a8;margin:0 0 18px">Adults only. You must be 18 or older.</p>
       <button class="btn btn-gold" onclick="enter()">I am 18+</button>
       <button class="btn btn-ghost" onclick="location.href='https://www.google.com'">Exit</button>
     </div>
@@ -37,33 +37,37 @@
 
     <main class="wrap">
       <section class="hero">
-        <p class="k">Independent 18+ studio</p>
-        <h1>Your films. Your brand.</h1>
-        <p class="s">Not a clone. Empty library until you publish. Accounts live on Firebase — not this browser.</p>
+        <p class="k">Jynvelo · 18+</p>
+        <h1>Trending on Jynvelo</h1>
+        <p class="s">Upload your video with a title and hashtags. Members watch in HD.</p>
+        <div class="hero-btns" id="heroBtns"></div>
       </section>
-      <div class="ad">AD · TOP 728×90 — paste ExoClick here later</div>
-      <h2 style="font-size:16px;margin:8px 0 14px">Library</h2>
+      <div class="cats">
+        <button class="cat on" data-c="">All</button>
+        <button class="cat" data-c="hindi">#hindi</button>
+        <button class="cat" data-c="hd">#hd</button>
+        <button class="cat" data-c="new">#new</button>
+        <button class="cat" data-c="indian">#indian</button>
+      </div>
+      <h2 class="sec">Latest videos</h2>
       <div id="grid" class="grid"></div>
-      <div class="ad">AD · BOTTOM</div>
     </main>
-    <footer class="foot wrap">
-      Jynvelo · 18+ · 2257 / DMCA placeholders · Do not upload content you do not own.
-    </footer>
+    <footer class="foot wrap">Jynvelo · 18+</footer>
   </div>
 
   <div class="player" id="player">
     <div class="player-in">
       <div class="preroll" id="preroll">
-        <div>AD · 10s pre-roll</div>
+        <div>AD · 10s</div>
         <div id="skip">Skip in 10</div>
       </div>
       <video id="vid" controls playsinline></video>
       <div style="padding:12px 14px">
-        <div style="display:flex;justify-content:space-between;gap:12px">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
           <strong id="ptitle"></strong>
           <button class="btn btn-ghost" onclick="closeP()">Close</button>
         </div>
-        <p id="ptags" style="color:#c4a35a;font-size:13px;margin:8px 0 0"></p>
+        <p id="ptags" style="color:#d4b06a;font-size:13px;margin:8px 0 0"></p>
       </div>
     </div>
   </div>
@@ -78,21 +82,29 @@
 
     const box = document.getElementById("authBox");
     function paintAuth(u) {
-      if (!window.JV.ready) {
-        box.innerHTML = '<a class="btn btn-wine" href="login.html">Setup login</a>';
-        return;
-      }
+      const hb = document.getElementById("heroBtns");
       if (!u) {
         box.innerHTML = '<a class="btn btn-gold" href="login.html">Log in</a>';
+        hb.innerHTML = '<a class="btn btn-gold" href="login.html">Create account</a><a class="btn btn-ghost" href="login.html">Log in</a>';
         return;
       }
-      box.innerHTML = '<span style="font-size:13px;margin-right:8px">' + (u.displayName || u.email) + '</span><button class="btn btn-ghost" id="lo">Out</button>';
+      const name = u.displayName || (u.email || "You").split("@")[0];
+      box.innerHTML = '<span class="userchip">'+name+'</span><button class="btn btn-ghost" id="lo">Out</button>';
       document.getElementById("lo").onclick = () => JV.logout();
+      hb.innerHTML = '<a class="btn btn-gold" href="upload.html">Upload video</a>';
     }
     JV.onUser(paintAuth);
 
     const grid = document.getElementById("grid");
     let all = [];
+    let cat = "";
+    document.querySelectorAll(".cat").forEach((b) => {
+      b.onclick = () => {
+        cat = b.dataset.c || "";
+        document.querySelectorAll(".cat").forEach((x) => x.classList.toggle("on", x === b));
+        draw(all);
+      };
+    });
     async function load() {
       try { all = await JV.listVideos(); } catch (e) { all = []; }
       draw(all);
@@ -100,21 +112,18 @@
     function draw(list) {
       const q = (document.getElementById("q").value || "").toLowerCase();
       const rows = list.filter((v) => {
+        const hay = ((v.title || "") + " " + JV.formatTags(v.tags || [])).toLowerCase();
+        if (cat && !hay.includes(cat)) return false;
         if (!q) return true;
-        const hay = ((v.title || "") + " " + (v.tags || []).join(" ") + " " + JV.formatTags(v.tags || [])).toLowerCase();
         return hay.includes(q.replace(/^#/, ""));
       });
-      if (!JV.ready) {
-        grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Firebase keys missing. Open firebase-config.js and add your project. Then login becomes real for every visitor.</div>';
-        return;
-      }
       if (!rows.length) {
-        grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No videos yet. Log in → Upload your own file or MP4 URL.</div>';
+        grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><strong style="color:#fff">Library is empty</strong><br>Tap Upload and add a title + hashtags.</div>';
         return;
       }
       grid.innerHTML = rows.map((v, i) =>
         '<article class="card" data-i="'+i+'"><div class="thumb">▶</div><div class="meta"><h3>'+
-        (v.title||"Video")+'</h3><small>'+(v.user||"")+'</small><div style="color:#c4a35a;font-size:12px;margin-top:4px">'+
+        (v.title||"Video")+'</h3><small>'+(v.user||"")+'</small><div style="color:#d4b06a;font-size:12px;margin-top:4px">'+
         JV.formatTags(v.tags||[])+'</div></div></article>'
       ).join("");
       grid.querySelectorAll(".card").forEach((el) => {

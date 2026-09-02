@@ -42,7 +42,6 @@
     const who = document.getElementById("who");
     const msg = document.getElementById("msg");
     JV.onUser((u) => {
-      if (!JV.ready) { who.textContent = "Add Firebase keys first."; return; }
       if (!u) { who.textContent = "Not logged in."; location.href = "login.html"; return; }
       who.textContent = "Publishing as " + (u.displayName || u.email);
     });
