@@ -7,6 +7,7 @@
   <title>Login | Jynvelo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="vh-store.js"></script>
+  <script src="email-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -133,11 +134,7 @@
       goNext();
     });
 
-    const EMAILJS = {
-      publicKey: "",
-      serviceId: "",
-      templateId: ""
-    };
+    const EMAILJS = window.JYNVElo_EMAIL || { publicKey: "", serviceId: "", templateId: "" };
 
     function showErr(t) {
       const el = document.getElementById('signupErr');
@@ -180,7 +177,7 @@
         if (sent.mailed) {
           showOk("OTP sent to your email. Valid 10 minutes.");
         } else {
-          showOk("EmailJS not connected yet. Demo OTP: " + res.code + " (valid 10 min). Add keys in login.html to send real email.");
+          showOk("Email not connected yet. Demo OTP: " + res.code + " — add keys in email-config.js");
         }
       } catch (e) {
         showErr("Could not send email. Demo OTP: " + res.code);

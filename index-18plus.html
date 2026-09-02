@@ -30,8 +30,7 @@
       <div class="mx-auto mb-4 w-16 h-16 rounded-full bg-xh flex items-center justify-center text-xl font-black">18+</div>
       <h1 class="text-2xl font-bold mb-2">Adults only</h1>
       <p class="text-sm text-zinc-400 mb-6 leading-relaxed">
-        આ સાઇટ ૧૮ વર્ષથી ઉપરના માટે છે. xHamster / XNXX જેવી ટ્યુબ ડિઝાઇનનો ડેમો.
-        અસલ પોર્ન વિડિયો અહીં હોસ્ટ થયેલા નથી.
+        Jynvelo is for adults only (18+). Faster layout, less clutter than typical tube sites.
       </p>
       <div class="grid grid-cols-2 gap-3">
         <button onclick="enterSite()" class="bg-xh hover:bg-red-500 py-3 rounded font-semibold">I'm 18+</button>
@@ -48,7 +47,7 @@
           <span class="font-bold text-lg hidden sm:block">Jyn<span class="xh-red">velo</span></span>
         </a>
         <form class="flex-1 max-w-xl mx-auto hidden sm:flex" onsubmit="event.preventDefault();">
-          <input type="search" placeholder="Search: hindi, xnxx, ગુજરાતી..."
+          <input type="search" placeholder="Search videos, tags, creators..."
             class="w-full h-9 bg-[#1a1a1a] border border-[#333] rounded-l px-3 text-sm outline-none focus:border-[#e34449]" />
           <button class="h-9 px-4 bg-xh rounded-r text-sm font-semibold">Search</button>
         </form>
@@ -89,9 +88,9 @@
     <div class="max-w-[1280px] mx-auto px-3 py-4">
       <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
         <div>
-          <p class="text-xs text-zinc-500 mb-1">Tags / <span class="text-zinc-300">xnxx-hindi</span></p>
-          <h1 class="text-2xl font-bold">XNXX Hindi <span class="text-sm font-normal text-zinc-500">18+</span></h1>
-          <p class="text-xs text-zinc-500 mt-1">ડેમો કેટલોગ • ટ્યુબ લેઆઉટ • પ્લેસહોલ્ડર થંબ</p>
+          <p class="text-xs text-zinc-500 mb-1">Jynvelo · Worldwide 18+</p>
+          <h1 class="text-2xl font-bold">Trending now <span class="text-sm font-normal text-zinc-500">HD · Fast player · No extra popups</span></h1>
+          <p class="text-xs text-zinc-400 mt-1">Cleaner than XNXX / xHamster clones — your videos, your ads, your brand.</p>
         </div>
         <div class="flex items-center gap-1 text-sm bg-[#1a1a1a] rounded p-1 border border-[#2a2a2a]">
           <button class="sortBtn px-3 py-1 rounded bg-xh text-white" data-s="best">Best</button>
@@ -136,7 +135,7 @@
       <div class="max-w-[1280px] mx-auto px-3 py-8 grid sm:grid-cols-3 gap-6">
         <div>
           <p class="text-white font-semibold mb-2">Jynvelo 18+</p>
-          <p>xHamster / XNXX ટેગ-પેજ જેવી ડિઝાઇન ડેમો. કોઈ તૃતીય-પક્ષ પોર્ન સાઇટનું કન્ટેન્ટ અહીં એમ્બેડ નથી.</p>
+          <p>Independent 18+ tube. We do not copy or embed XNXX / xHamster videos.</p>
         </div>
         <div class="space-y-1">
           <p class="text-white font-semibold mb-2">Legal</p>
@@ -247,12 +246,12 @@ function cardHTML(v){
     +'<div class="overlay absolute inset-0 bg-black/35 opacity-0 transition flex items-center justify-center">'
     +'<span class="w-11 h-11 rounded-full bg-xh/90 flex items-center justify-center text-lg">▶</span></div>'
     +'<span class="absolute bottom-1.5 right-1.5 bg-black/80 text-[11px] px-1 rounded">'+dur(v.dur)+'</span>'
-    +(v.hd?'<span class="absolute top-1.5 right-1.5 bg-black/80 text-[10px] font-bold px-1 rounded">HD</span>':'')
+    +(v.hd?'<span class="absolute top-1.5 right-1.5 bg-black/80 text-[10px] font-bold px-1 rounded">1080p</span>':'')
     +'<span class="absolute top-1.5 left-1.5 bg-xh text-[10px] font-bold px-1 rounded">18+</span>'
     +(v.hasFile||v.extra&&v.extra.indexOf('user')>=0?'<span class="absolute bottom-1.5 left-1.5 bg-emerald-700 text-[10px] font-bold px-1 rounded">USER</span>':'')
     +'</div>'
     +'<h3 class="mt-1.5 text-[13px] leading-snug line-2 group-hover:text-[#e34449]">'+v.title+'</h3>'
-    +'<p class="text-[11px] text-zinc-500 mt-0.5">'+v.user+' · '+fmtViews(v.views)+' views · '+v.age+'d</p></article>';
+    +'<p class="text-[11px] text-zinc-500 mt-0.5">'+v.user+' · '+fmtViews(v.views)+' views · ★ '+(88+(v.id%12))+'%</p></article>';
 }
 function filtered(){
   let list = VIDEOS.slice();
